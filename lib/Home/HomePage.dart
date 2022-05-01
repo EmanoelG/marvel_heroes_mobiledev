@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'package:marvel_heroes_yt/Models/Comics.dart';
+import '../Comics/Controll/ComicsControl.dart';
 import '../Models/ComicsNew.dart';
-import 'Comics.dart';
-import 'Personagem/Personagem.dart';
-import 'Personagem/homeController.dart';
+import '../Models/Personagem.dart';
+import 'HomeController.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,10 +13,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late Size _tela;
   late TabController tabController;
-
+  var descriptionHeroes = '';
   @override
   void initState() {
-    tabController = TabController(length: 2, vsync: this);
+    tabController = new TabController(length: 2, vsync: this);
     super.initState();
   }
 
@@ -32,27 +32,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     ];
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Heroes Marvel'),
+        centerTitle: true,
+      ),
       body: TabBarView(
         controller: tabController,
         children: paginas,
       ),
-      bottomNavigationBar: TabBar(
-        controller: tabController,
-        tabs: const <Widget>[
-          Tab(
-            icon: Icon(
-              Icons.home,
-              color: Colors.black,
-            ),
+      bottomNavigationBar: TabBar(controller: tabController, tabs: <Widget>[
+        Tab(
+          icon: Icon(
+            Icons.home,
+            color: Colors.black,
           ),
-          Tab(
-            icon: Icon(
-              Icons.description,
-              color: Colors.black,
-            ),
+        ),
+        Tab(
+          icon: Icon(
+            Icons.description,
+            color: Colors.black,
           ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 
@@ -62,12 +63,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Column(
           children: <Widget>[
             Container(
-              color: Colors.grey,
-              height: tela.height * .8,
-              width: tela.width * .8,
+              color: Colors.black,
+              height: tela.height * .7,
               child: _containerPersonagens(context),
             ),
-            // _comics(context)
+            _description(),
           ],
         ),
       ),
@@ -76,86 +76,54 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _containerPersonagens(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: _tela.width * .07),
+      padding: EdgeInsets.only(top: _tela.width * .09),
       child: Column(
         children: <Widget>[
           StreamBuilder<List<Personagem>>(
               stream: homeC.outPerson,
               builder: (BuildContext context, snapshot) {
-                print(snapshot.hashCode);
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
                 } else if (!snapshot.hasData) {
                   return Text("Sem dados");
                 }
-
                 return Expanded(
                   child: Container(
                     width: double.infinity,
-                    child: GridView.builder(
-                        itemCount: snapshot.data?.length,
-                        scrollDirection: Axis.horizontal,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1),
-                        itemBuilder: (context, int index) {
-                          Personagem perso = snapshot.data![index];
-                          return GestureDetector(
-                            onTap: () {
-                              print('Personame: ' + perso.name);
-                              homeC.atualizaQuadros(perso);
-                              comicsC.getComics(perso.id);
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(colors: [
-                                Colors.red,
-                                perso.clicked ? Colors.blue : Colors.red
-                              ], begin: Alignment.topCenter)),
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    color: perso.clicked
-                                        ? Colors.black
-                                        : Colors.white,
-                                    width: double.infinity,
-                                    child: Center(
-                                        child: Text(
-                                      perso.name,
-                                      style: TextStyle(
-                                          fontSize: _tela.width * .08,
-                                          color: perso.clicked
-                                              ? Colors.white
-                                              : Colors.black),
-                                    )),
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      scrollDirection: Axis.horizontal,
+                      // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      //     crossAxisCount: 1),
+                      itemBuilder: (context, int index) {
+                        Personagem perso = snapshot.data![index];
+                        return GestureDetector(
+                          onTap: () {
+                            print(perso.description);
+                            setState(() {
+                              descriptionHeroes = perso.description;
+                            });
+                            // comicsC.getComics(perso.id);
+                            homeC.atualizaQuadros(perso);
+                          },
+                          child: Column(
+                            children: <Widget>[
+                              containerPersonagem(perso),
+                              Expanded(
+                                child: Container(
+                                  child: Image.network(
+                                    "${perso.thumbnail.path}.${perso.thumbnail.extension}",
+                                    fit: BoxFit.fill,
                                   ),
-                                  Expanded(
-                                      child: Container(
-                                    child: Image.network(
-                                      "${perso.thumbnail.path}.${perso.thumbnail.extension}",
-                                      //  fit: BoxFit.,
-                                    ),
-                                  )),
-                                  Container(
-                                      //padding: EdgeInsets.all(8),
-                                      color: perso.clicked
-                                          ? Colors.black
-                                          : Colors.white,
-                                      child: Center(
-                                        child: Text(
-                                          "Comics disponíveis: ${perso.comic.available}",
-                                          style: TextStyle(
-                                              color: perso.clicked
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              fontSize: _tela.width * .08),
-                                        ),
-                                      )),
-                                ],
+                                ),
                               ),
-                            ),
-                          );
-                        }),
+
+                              // _description(perso),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 );
               }),
@@ -163,74 +131,39 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
-}
 
-Widget _comics(BuildContext context) {
-  var _tela = MediaQuery.of(context).size;
-  return ListView(
-    physics: NeverScrollableScrollPhysics(),
-    shrinkWrap: true,
-    children: <Widget>[
-      StreamBuilder<List<ComicsNew>>(
-        stream: comicsC.outComics,
-        builder: (BuildContext context, snapshot) {
-          if (!snapshot.hasData) {
-            return Text("CLique em algum personagem");
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                CircularProgressIndicator(),
-              ],
-            );
-          }
-          return Card(
-            child: Column(
-              children: <Widget>[
-                Container(
-                    width: double.infinity,
-                    color: Colors.black,
-                    child: Center(
-                      child: Text(
-                        "Comics listas",
-                        style: TextStyle(
-                            color: Colors.white, fontSize: _tela.width * .05),
-                      ),
-                    )),
-                Padding(padding: EdgeInsets.only(bottom: _tela.width * .08)),
-                ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, int index) {
-                      ComicsNew comic = snapshot.data![index];
-                      return Card(
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  width: _tela.width * .40,
-                                  child: Image.network(
-                                      "${comic.thumbnail.path}.${comic.thumbnail.extension}"),
-                                ),
-                                Padding(padding: EdgeInsets.only(left: 10)),
-                                Expanded(child: Text(comic.description)),
-                              ],
-                            ),
-                            Divider(),
-                          ],
-                        ),
-                      );
-                    })
-              ],
-            ),
-          );
-        },
-      )
-    ],
-  );
+  Container containerDeDisponiveis(Personagem perso) {
+    return Container(
+        //padding: EdgeInsets.all(8),
+        color: perso.clicked ? Colors.black : Colors.white,
+        child: Center(
+          child: Text(
+            "Comics disponíveis: ${perso.comics.available}",
+            style: TextStyle(
+                color: perso.clicked ? Colors.white : Colors.black,
+                fontSize: _tela.width * .08),
+          ),
+        ));
+  }
+
+  Center containerPersonagem(Personagem perso) {
+    return Center(
+      child: Text(
+        perso.name,
+        style: TextStyle(
+            fontSize: _tela.width * .08,
+            color: perso.clicked ? Colors.white : Colors.white),
+      ),
+    );
+  }
+
+  _description() {
+    Personagem perso;
+    return Container(
+      child: Text(
+        descriptionHeroes,
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
 }

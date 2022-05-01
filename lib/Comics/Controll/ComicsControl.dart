@@ -1,0 +1,48 @@
+import 'dart:convert';
+
+import 'package:bloc/bloc.dart';
+import 'package:http/http.dart' as http;
+import 'package:rxdart/subjects.dart';
+
+import '../../Helper.dart';
+import '../../Models/ComicsNew.dart';
+
+class ComicsController extends BlocBase {
+  //BLOC PERSONAGEM
+  BehaviorSubject<List<ComicsNew>> blocComics = BehaviorSubject();
+
+  Sink<List<ComicsNew>> get inComics => blocComics.sink;
+  Stream<List<ComicsNew>> get outComics => blocComics.stream;
+  //FIM BLOC PERSONAGEM
+
+  late List<ComicsNew> listaComics;
+  ComicsController() : super(null) {
+    listaComics = [];
+  }
+
+  getComics(int idPersonagem) {
+    listaComics = [];
+    inComics.add(listaComics);
+
+    String urlFinal =
+        gerarUrl("characters/$idPersonagem/comics", adicional: "&limit=25");
+
+    http.get(Uri.parse(urlFinal)).then((value) {
+      if (value.statusCode.toString() == '200') {
+        var comicJson = jsonDecode(value.body)["data"]["results"];
+        for (var c in comicJson) {
+          ComicsNew comic = ComicsNew.fromJson(c);
+          listaComics.add(comic);
+        }
+        inComics.add(listaComics);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    blocComics.close();
+  }
+}
+
+ComicsController comicsC = ComicsController();

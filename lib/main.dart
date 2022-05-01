@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'Home/HomePage.dart';
-import 'Home/MyHomePage.dart';
 
 void main() {
-  runApp( MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,11 +13,39 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      showSemanticsDebugger: false,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
+        appBarTheme: appBarTheme(),
       ),
-      home: MyHomePage(),
+      home: MyHomePage('Marvel app'),
+    );
+  }
+
+  AppBarTheme appBarTheme() {
+    return const AppBarTheme(
+      color: Colors.red,
+      shadowColor: Colors.black,
+      titleTextStyle: TextStyle(
+          fontWeight: FontWeight.bold, fontSize: 24, color: Colors.white),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage(this.title) : super();
+
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: HomePage(),
     );
   }
 }

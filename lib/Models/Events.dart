@@ -1,22 +1,20 @@
+
+
 import 'Items.dart';
 
-class Comics {
-  late int available;
-  late String collectionURI;
-  late List<Items> items;
-  late int returned;
+class Events {
+ late int available;
+ late String collectionURI;
+ late List<Items> items;
+ late int returned;
 
-  Comics(
-      {required this.available,
-      required this.collectionURI,
-      required this.items,
-      required this.returned});
+  Events({required this.available,required this.collectionURI,required this.items,required this.returned});
 
-  Comics.fromJson(Map<String, dynamic> json) {
+  Events.fromJson(Map<String, dynamic> json) {
     available = json['available'];
     collectionURI = json['collectionURI'];
     if (json['items'] != null) {
-      List<Items> items = [];
+     List<Items> items = [];
       json['items'].forEach((v) {
         items.add(new Items.fromJson(v));
       });

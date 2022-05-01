@@ -1,27 +1,24 @@
 import 'Items.dart';
 
-class Comics {
+class Series {
   late int available;
   late String collectionURI;
   late List<Items> items;
-  late int returned;
 
-  Comics(
+  Series(
       {required this.available,
       required this.collectionURI,
-      required this.items,
-      required this.returned});
+      required this.items});
 
-  Comics.fromJson(Map<String, dynamic> json) {
-    available = json['available'];
-    collectionURI = json['collectionURI'];
+  Series.fromJson(Map<String, dynamic> json) {
+    available = json['available'] ?? 0;
+    collectionURI = json['collectionURI']?? '';
     if (json['items'] != null) {
       List<Items> items = [];
       json['items'].forEach((v) {
         items.add(new Items.fromJson(v));
       });
     }
-    returned = json['returned'];
   }
 
   Map<String, dynamic> toJson() {
@@ -31,7 +28,6 @@ class Comics {
     if (this.items != null) {
       data['items'] = this.items.map((v) => v.toJson()).toList();
     }
-    data['returned'] = this.returned;
     return data;
   }
 }
