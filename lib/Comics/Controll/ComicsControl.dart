@@ -24,12 +24,17 @@ class ComicsController extends BlocBase {
     listaComics = [];
     inComics.add(listaComics);
 
-    String urlFinal =
-        gerarUrl("characters/$idPersonagem/comics", adicional: "&limit=25");
-
+    String urlFinal = gerarUrl(
+        assunto: "characters/$idPersonagem/comics",
+        adicional:
+            "&limit=5"); //"characters/$idPersonagem/comics", adicional: "&limit=25"
+    // print('URL FORMADA PARA BUSCA POR ID : ' + urlFinal);
     http.get(Uri.parse(urlFinal)).then((value) {
       if (value.statusCode.toString() == '200') {
         var comicJson = jsonDecode(value.body)["data"]["results"];
+        print('<0>');
+        print(comicJson);
+        print('<0>');
         for (var c in comicJson) {
           ComicsNew comic = ComicsNew.fromJson(c);
           listaComics.add(comic);

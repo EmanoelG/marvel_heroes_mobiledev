@@ -11,11 +11,11 @@ var url = "http://gateway.marvel.com/v1/public/";
 var timeStamp = DateTime.now();
 var hash;
 
-String gerarUrl(String assunto, {String adicional = ""}) {
+String gerarUrl({String assunto = "characters", String adicional = ""}) {
   gerarHash();
   String urlFinal =
       "$url$assunto?apikey=${Helper.publicApiKey}&hash=$hash&ts=${timeStamp.toIso8601String()}$adicional";
-  print(urlFinal);
+  print('URL FORMADA' + urlFinal);
   return urlFinal;
 }
 

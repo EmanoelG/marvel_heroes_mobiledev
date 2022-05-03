@@ -32,7 +32,7 @@ class ComicsNew {
   late List<Null> images;
   late Creators creators;
   late Map<String, dynamic> characters;
-  late Stories stories;
+
   late Events events;
 
   ComicsNew(
@@ -63,7 +63,6 @@ class ComicsNew {
       required this.images,
       required this.creators,
       required this.characters,
-      required this.stories,
       required this.events});
 
   ComicsNew.fromJson(Map<String, dynamic> json) {
@@ -81,11 +80,8 @@ class ComicsNew {
     issn = json['issn'];
     format = json['format'];
     pageCount = json['pageCount'];
-
     resourceURI = json['resourceURI'];
-
     series = (json['series'] != null ? Series.fromJson(json['series']) : null)!;
-
     thumbnail = (json['thumbnail'] != null
         ? Thumbnail.fromJson(json['thumbnail'])
         : null)!;
@@ -94,9 +90,6 @@ class ComicsNew {
         ? Creators.fromJson(json['creators'])
         : null)!;
     characters = json['characters'] ?? null;
-    stories =
-        (json['stories'] != null ? Stories.fromJson(json['stories']) : null)!;
-    events = (json['events'] != null ? Events.fromJson(json['events']) : null)!;
   }
 
   Map<String, dynamic> toJson() {
@@ -132,9 +125,7 @@ class ComicsNew {
     if (this.characters != null) {
       data['characters'] = this.characters;
     }
-    if (this.stories != null) {
-      data['stories'] = this.stories.toJson();
-    }
+
     if (this.events != null) {
       data['events'] = this.events.toJson();
     }

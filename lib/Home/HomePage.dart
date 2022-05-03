@@ -1,5 +1,8 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:marvel_heroes_yt/Models/Comics.dart';
+import 'package:marvel_heroes_yt/Page/PageDetalhes.dart';
+import 'package:marvel_heroes_yt/utils/nav.dart';
 import '../Comics/Controll/ComicsControl.dart';
 import '../Models/ComicsNew.dart';
 import '../Models/Personagem.dart';
@@ -14,6 +17,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late Size _tela;
   late TabController tabController;
   var descriptionHeroes = '';
+  List<Personagem> listPerson = [];
   @override
   void initState() {
     tabController = new TabController(length: 2, vsync: this);
@@ -40,7 +44,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         controller: tabController,
         children: paginas,
       ),
-      bottomNavigationBar: TabBar(controller: tabController, tabs: <Widget>[
+      bottomNavigationBar:
+          TabBar(controller: tabController, tabs: const <Widget>[
         Tab(
           icon: Icon(
             Icons.home,
@@ -58,111 +63,97 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _personagens(BuildContext context, tela) {
-    return SingleChildScrollView(
-      child: Container(
-        child: Column(
-          children: <Widget>[
-            Container(
-              color: Colors.black,
-              height: tela.height * .7,
-              child: _containerPersonagens(context),
-            ),
-            _description(),
-          ],
-        ),
-      ),
+    return Container(
+      color: Color.fromARGB(255, 12, 12, 12),
+      height: tela.height * .9,
+      child: listViewHeroes(), //_containerPersonagens(context),
     );
   }
 
-  Widget _containerPersonagens(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: _tela.width * .09),
-      child: Column(
-        children: <Widget>[
-          StreamBuilder<List<Personagem>>(
-              stream: homeC.outPerson,
-              builder: (BuildContext context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (!snapshot.hasData) {
-                  return Text("Sem dados");
-                }
-                return Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    child: ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      scrollDirection: Axis.horizontal,
-                      // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      //     crossAxisCount: 1),
-                      itemBuilder: (context, int index) {
-                        Personagem perso = snapshot.data![index];
-                        return GestureDetector(
-                          onTap: () {
-                            print(perso.description);
-                            setState(() {
-                              descriptionHeroes = perso.description;
-                            });
-                            // comicsC.getComics(perso.id);
-                            homeC.atualizaQuadros(perso);
-                          },
-                          child: Column(
-                            children: <Widget>[
-                              containerPersonagem(perso),
-                              Expanded(
-                                child: Container(
-                                  child: Image.network(
-                                    "${perso.thumbnail.path}.${perso.thumbnail.extension}",
-                                    fit: BoxFit.fill,
+  listViewHeroes() {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          child: StreamBuilder<List<Personagem>>(
+            stream: homeC.outPerson,
+            builder: (BuildContext context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (!snapshot.hasData) {
+                return Text("Sem dados");
+              }
+
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  Personagem perso = snapshot.data![index];
+
+                  return Card(
+                    color: Color.fromARGB(255, 250, 250, 250),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Center(
+                              child: Image.network(
+                            "${perso.thumbnail.path}.${perso.thumbnail.extension}",
+                            width: 350,
+                          )),
+                          Text(
+                            perso.name,
+                            maxLines: 1,
+                            style: TextStyle(fontSize: 25),
+                          ),
+                          const Text(
+                            'Descrição ',
+                            maxLines: 1,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          ButtonBarTheme(
+                            data: ButtonBarTheme.of(context),
+                            child: ButtonBar(
+                              children: <Widget>[
+                                FlatButton(
+                                  onPressed: () => {
+                                    comicsC.getComics(perso.id),
+                                    push(
+                                        context,
+                                        PageDetalhes(
+                                          id: perso.id,
+                                        )),
+                                  },
+                                  child: const Text(
+                                    'Detalhes ',
+                                    style: TextStyle(
+                                        color: Color(0xFF0505059),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
                                   ),
                                 ),
-                              ),
-
-                              // _description(perso),
-                            ],
+                                FlatButton(
+                                  onPressed: () {},
+                                  child: const Text(
+                                    'Compartilhar ',
+                                    style: TextStyle(
+                                        color: Color(0xFFFF00009),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }),
-        ],
-      ),
-    );
-  }
-
-  Container containerDeDisponiveis(Personagem perso) {
-    return Container(
-        //padding: EdgeInsets.all(8),
-        color: perso.clicked ? Colors.black : Colors.white,
-        child: Center(
-          child: Text(
-            "Comics disponíveis: ${perso.comics.available}",
-            style: TextStyle(
-                color: perso.clicked ? Colors.white : Colors.black,
-                fontSize: _tela.width * .08),
+                  );
+                },
+              );
+            },
           ),
-        ));
-  }
-
-  Center containerPersonagem(Personagem perso) {
-    return Center(
-      child: Text(
-        perso.name,
-        style: TextStyle(
-            fontSize: _tela.width * .08,
-            color: perso.clicked ? Colors.white : Colors.white),
-      ),
-    );
-  }
-
-  _description() {
-    Personagem perso;
-    return Container(
-      child: Text(
-        descriptionHeroes,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }

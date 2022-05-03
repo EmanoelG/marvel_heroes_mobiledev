@@ -23,7 +23,7 @@ class HomeController extends BlocBase {
   }
 
   escolhePersonagem(List<int> ids) {
-     listaPersonagem = [];
+    listaPersonagem = [];
 
     for (var id in ids) {
       getPersonagemPorId(id);
@@ -31,7 +31,7 @@ class HomeController extends BlocBase {
   }
 
   getPersonagemPorId(int id) {
-    String urlFinal = gerarUrl("characters/$id");
+    String urlFinal = gerarUrl(); //"characters/$id"
     print(urlFinal);
     http.get(Uri.parse(urlFinal)).then((v) {
       if (v.statusCode.toString() == '200') {

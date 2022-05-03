@@ -26,11 +26,11 @@ class Personagem {
     description = json['description'];
     modified = json['modified'];
     thumbnail = (json['thumbnail'] != null
-        ? new Thumbnail.fromJson(json['thumbnail'])
+        ?  Thumbnail.fromJson(json['thumbnail'])
         : null)!;
     resourceURI = json['resourceURI'];
     comics =
-        (json['comics'] != null ? new Comics.fromJson(json['comics']) : null)!;
+        (json['comics'] != null ?  Comics.fromJson(json['comics']) : null)!;
   }
 
   Map<String, dynamic> toJson() {
