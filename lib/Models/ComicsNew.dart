@@ -90,6 +90,11 @@ class ComicsNew {
         ? Creators.fromJson(json['creators'])
         : null)!;
     characters = json['characters'] ?? null;
+
+    description = description.replaceAll("<p>", "");
+    description = description.replaceAll("</p>", "");
+    description = description.replaceAll("<br>", "");
+    description = description.replaceAll("</br>", "");
   }
 
   Map<String, dynamic> toJson() {

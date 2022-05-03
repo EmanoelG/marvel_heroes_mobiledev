@@ -32,9 +32,6 @@ class ComicsController extends BlocBase {
     http.get(Uri.parse(urlFinal)).then((value) {
       if (value.statusCode.toString() == '200') {
         var comicJson = jsonDecode(value.body)["data"]["results"];
-        print('<0>');
-        print(comicJson);
-        print('<0>');
         for (var c in comicJson) {
           ComicsNew comic = ComicsNew.fromJson(c);
           listaComics.add(comic);

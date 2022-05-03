@@ -6,6 +6,7 @@ import 'package:marvel_heroes_yt/utils/nav.dart';
 import '../Comics/Controll/ComicsControl.dart';
 import '../Models/ComicsNew.dart';
 import '../Models/Personagem.dart';
+import '../utils/loadingpersonagem.dart';
 import 'HomeController.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,9 +19,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late TabController tabController;
   var descriptionHeroes = '';
   List<Personagem> listPerson = [];
+  List<Personagem> listPersonFavoritos = [];
   @override
   void initState() {
-    tabController = new TabController(length: 2, vsync: this);
+    tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
 
@@ -79,7 +81,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             stream: homeC.outPerson,
             builder: (BuildContext context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return LoadingPersonagem();
               } else if (!snapshot.hasData) {
                 return Text("Sem dados");
               }
@@ -106,16 +108,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             maxLines: 1,
                             style: TextStyle(fontSize: 25),
                           ),
-                          const Text(
-                            'Descrição ',
-                            maxLines: 1,
-                            style: TextStyle(fontSize: 16),
-                          ),
                           ButtonBarTheme(
                             data: ButtonBarTheme.of(context),
                             child: ButtonBar(
+                              alignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 FlatButton(
+                                  color: Color.fromARGB(255, 2, 2, 2),
                                   onPressed: () => {
                                     comicsC.getComics(perso.id),
                                     push(
@@ -127,19 +126,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   child: const Text(
                                     'Detalhes ',
                                     style: TextStyle(
-                                        color: Color(0xFF0505059),
+                                        color:
+                                            Color.fromARGB(237, 243, 243, 243),
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),
                                   ),
                                 ),
-                                FlatButton(
+                                IconButton(
+                                  onPressed: () {
+                                    listPersonFavoritos.add(perso);
+                                  },
+                                  icon: const Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                    size: 40,
+                                  ),
+                                ),
+                                IconButton(
                                   onPressed: () {},
-                                  child: const Text(
-                                    'Compartilhar ',
-                                    style: TextStyle(
-                                        color: Color(0xFFFF00009),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
+                                  icon: const Icon(
+                                    Icons.share,
+                                    color: Colors.black,
+                                    size: 40,
                                   ),
                                 ),
                               ],
