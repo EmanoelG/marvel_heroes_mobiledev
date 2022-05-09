@@ -6,6 +6,8 @@ import 'package:rxdart/subjects.dart';
 
 import '../../Helper.dart';
 import '../../Models/ComicsNew.dart';
+import '../../Models/Personagem.dart';
+import '../../Models/searchdelegate/CharacterDataWrapper.dart';
 
 class ComicsController extends BlocBase {
   //BLOC PERSONAGEM
@@ -16,8 +18,11 @@ class ComicsController extends BlocBase {
   //FIM BLOC PERSONAGEM
 
   late List<ComicsNew> listaComics;
+  late List<Personagem> listaPersonagem;
+
   ComicsController() : super(null) {
     listaComics = [];
+    //   listaPersonagem = [];
   }
 
   getComics(int idPersonagem) {

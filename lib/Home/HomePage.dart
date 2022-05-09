@@ -6,6 +6,7 @@ import 'package:marvel_heroes_yt/utils/nav.dart';
 import '../Comics/Controll/ComicsControl.dart';
 import '../Models/ComicsNew.dart';
 import '../Models/Personagem.dart';
+import '../Models/searchdelegate/searchdelegate.dart';
 import '../utils/loadingpersonagem.dart';
 import 'HomeController.dart';
 
@@ -41,6 +42,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       appBar: AppBar(
         title: const Text('Heroes Marvel'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: CustomoSearchDelegate(),
+              );
+            },
+            icon: const Icon(Icons.search),
+          ),
+        ],
       ),
       body: TabBarView(
         controller: tabController,
@@ -68,7 +80,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Container(
       color: Color.fromARGB(255, 12, 12, 12),
       height: tela.height * .9,
-      child: listViewHeroes(), //_containerPersonagens(context),
+      child: listViewHeroes(),
     );
   }
 

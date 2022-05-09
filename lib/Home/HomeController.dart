@@ -45,6 +45,29 @@ class HomeController extends BlocBase {
     });
   }
 
+  getPersonByName(String name) {
+    listaPersonagem = [];
+
+    String urlFinal = gerarUrlByName(
+      assunto: "characters?nameStartsWith=$name",
+    );
+    print('URL FORMADA>>> ' + urlFinal);
+
+    http.get(Uri.parse(urlFinal)).then(
+      (value) {
+        if (value.statusCode.toString() == '200') {
+          var personagems = jsonDecode(value.body)["data"]["results"];
+          for (var c in personagems) {
+            personagems = Personagem.fromJson(c);
+            listaPersonagem.add(personagems);
+          }
+          inPerson.add(listaPersonagem);
+          //  inComics.add(listaComics);
+        }
+      },
+    );
+  }
+
   atualizaQuadros(Personagem perso) {
     for (var a in listaPersonagem) {
       a.clicked = false;
