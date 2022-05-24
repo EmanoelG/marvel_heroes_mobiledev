@@ -1,9 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:marvel_heroes_yt/utils/splashScreen.dart';
 import 'Home/HomePage.dart';
+import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
+ 
   runApp(MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -16,7 +21,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
         appBarTheme: appBarTheme(),
       ),
-      home: MyHomePage('Marvel app'),
+      home: SplashPage(),
     );
   }
 
