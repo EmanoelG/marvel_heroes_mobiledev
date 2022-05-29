@@ -26,7 +26,7 @@ class _SplashPageState extends State<SplashPage> {
     Future.wait([firebaseLogin, futureB]).then(
       (List values) {
         print(values);
-        push(context, LoginPage(), replace: false);
+        push(context, LoginScreen(), replace: false); //LoginPage
       },
     );
   }

@@ -43,6 +43,7 @@ dependencies:
   flutterfire_cli: ^0.2.2+2
   firebase_core: ^1.17.0
   firebase_auth: ^3.3.18
+  pinput: ^2.2.9
  # firebase_auth: ^3.3.18
 
 dev_dependencies:
